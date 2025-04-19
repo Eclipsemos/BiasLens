@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BiasLens</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <h1>BiasLens</h1>
+        <div class="status-container">
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>Analyzing article...</p>
+            </div>
+            <div id="results" class="hidden">
+                <div class="result-section">
+                    <h2>Bias Analysis</h2>
+                    <div id="bias-analysis"></div>
+                </div>
+                <div class="result-section">
+                    <h2>Fact Check</h2>
+                    <div id="fact-check"></div>
+                </div>
+                <div class="result-section">
+                    <h2>Summary</h2>
+                    <div id="summary"></div>
+                </div>
+            </div>
+            <div id="error" class="hidden">
+                <p>Error analyzing article. Please try again.</p>
+            </div>
+        </div>
+        <button id="analyze-btn">Analyze Current Page</button>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html> 
