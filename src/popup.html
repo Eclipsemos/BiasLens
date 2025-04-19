@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>BiasLens</title>
-    <link rel="stylesheet" href="src/popup.css">
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
     <div class="container">
@@ -25,6 +25,12 @@
                     <h2>Summary</h2>
                     <div id="summary"></div>
                 </div>
+                <div class="result-section">
+                    <h2>Opposite Perspectives</h2>
+                    <div id="opposite-perspectives">
+                        <div class="perspective-links"></div>
+                    </div>
+                </div>
             </div>
             <div id="error" class="hidden">
                 <p>Error analyzing article. Please try again.</p>
@@ -32,6 +38,6 @@
         </div>
         <button id="analyze-btn">Analyze Current Page</button>
     </div>
-    <script src="src/popup.js"></script>
+    <script src="popup.js"></script>
 </body>
 </html> 
