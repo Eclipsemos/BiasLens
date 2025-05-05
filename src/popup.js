@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Show results
                     loadingDiv.classList.add('hidden');
                     resultsDiv.classList.remove('hidden');
+                    resultsDiv.classList.remove('fade-in'); 
+                    void resultsDiv.offsetWidth; 
+                    resultsDiv.classList.add('fade-in');
                 } else {
                     throw new Error('No content extracted');
                 }

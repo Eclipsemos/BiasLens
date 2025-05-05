@@ -16,6 +16,60 @@ h1 {
     text-align: center;
 }
 
+body {
+    width: 400px;
+    padding: 10px 20px;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f6f8;
+}
+
+.intro {
+    text-align: center;
+    font-size: 0.95em;
+    color: #555;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+#analyze-btn {
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+#analyze-btn:hover {
+    background: linear-gradient(to right, #43e97b, #38f9d7);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-height: 200px;
+    justify-content: center;
+}
+
+.logo {
+    width: 64px;
+    height: 64px;
+    margin: 10px auto;
+    display: block;
+    opacity: 0.9;
+    transition: transform 0.3s ease;
+}
+.logo:hover {
+    transform: scale(1.1);
+}
+
 .status-container {
     min-height: 200px;
 }
@@ -99,3 +153,14 @@ h2 {
     color: #666;
     font-size: 0.9em;
 } 
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.6s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
