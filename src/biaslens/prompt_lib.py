@@ -134,7 +134,7 @@ prompt_lib = {
         "Note that your knowledge only extends up to 2024, and today's date is {current_date}. This content is written in {article_time}. "
         "Thus, avoid relying too much on your outdated information. Prioritize clues from the online search results, as they better reflect the current situation. "
         "Normally, alleged facts are unlikely false given their wide dissemination. But misinformation remains possible.\n\n"
-        "Sometimes the search results can be irrelevant or insufficient to verify the alleged fact."
+        "Sometimes the search results can be irrelevant due to the limitations of search engines."
         "Respond **only** with a JSON object in the following format. Example:\n"
         "{{\"fact_check\": \"Verified\", \"fact_check_reason\": \"The US has a trade deficit with China, as confirmed by multiple sources.\"}}\n\n"
         
