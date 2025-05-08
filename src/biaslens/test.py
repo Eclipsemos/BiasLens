@@ -1,4 +1,4 @@
-from cfg import LLM_API_KEY, LLM_MODEL_NAME
+from cfg import LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY
 from biaslens import BiasLens
 
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         For despite Francis' hostility, the Latin Mass has continued to pull new converts and lapsed Catholics into the pews.
         And recent polling shows the decline of Christianity in America and Europe has slowed, halted, or even, in places, reversed:
         Young men in particular are becoming more religious, a trend connected to a rightward turn in politics.
-        In France, the church has just recorded a 45% increase over last year in adult baptisms at Easter — leading to the largest number of converts entering the church this season in the 20 years the French Bishops' Conference has been conducting its survey.
+        In France, the church has just recorded a 45 percent increase over last year in adult baptisms at Easter — leading to the largest number of converts entering the church this season in the 20 years the French Bishops' Conference has been conducting its survey.
         On the last day of his life, Pope Francis met with Vice President JD Vance, a young Catholic convert on the populist right who exemplifies the changes taking place in the world and Church alike.
         The next pope may be as critical of Trump-Vance immigration policy as Francis was; a pope can be expected to prioritize compassion, including for illegal immigrants.
         But if Francis was the pope for a globalist era, what the Catholic Church needs now is a populist pope, one who understands that if the church renews its ties to the working class within the West, not just in the global South, it will find ready converts.
@@ -42,7 +42,7 @@ if __name__ == "__main__":
         Daniel McCarthy, a recognized expert on conservative thought, is the editor-in-chief of Modern Age: A Conservative Review. He's also a regular contributor to The Spectator's World edition. He has a long association with The American Conservative, a magazine co-founded by Pat Buchanan. Mr. McCarthy's writings appeared in a variety of publications. He has appeared on PBS NewsHour, NPR, the BBC, the Australian Broadcasting Corporation, CNN International and other radio and television outlets. Read more of Daniel McCarthy's reports — Here."""
     }
 
-    lens = BiasLens(sample_request, LLM_API_KEY, LLM_MODEL_NAME)
-    lens.article_pre_analysis()
+    lens = BiasLens(sample_request, LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY)
+    results = lens.run()
 
-    print(lens.results)
+    print(results)

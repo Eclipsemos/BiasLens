@@ -8,5 +8,8 @@
 
  - [chatgpt4google](https://chatgpt4google.com)
 
+ - [Google Gemini API Docs](https://ai.google.dev/gemini-api/docs)
+
+
 ## toolkits for web automation
  - [nanobrowser](https://github.com/nanobrowser/nanobrowser/tree/master)
