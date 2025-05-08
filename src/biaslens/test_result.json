@@ -1,0 +1,118 @@
+{
+    "article_info": {
+        "institution": "Newsmax",
+        "time": "April 23, 2025",
+        "abstract": "Daniel McCarthy argues that Pope Francis's pontificate was tailored for an era of globalization that has since shifted. He suggests the Catholic Church now needs a populist pope who can reconnect with the Western working class and emphasize traditional moral teachings. The author believes this approach would be more effective in evangelizing the West than Francis's strategy.",
+        "entities": [
+            "Pope Francis",
+            "Catholic Church",
+            "JD Vance"
+        ]
+    },
+    "article_intent": {
+        "expressive_intent": "Opinion Content"
+    },
+    "article_tendency": {
+        "entities": [
+            "Pope Francis",
+            "Catholic Church",
+            "JD Vance"
+        ],
+        "language_style": "Subjective / Emotional",
+        "entities_tendency": [
+            "Negative",
+            "Neutral or No Presetting Tendency",
+            "Positive"
+        ]
+    },
+    "institution_bias": {
+        "institution": "Newsmax",
+        "institution_type": "Commercial",
+        "credibility": "Low",
+        "credibility_reason": "Newsmax is a commercial entity known for its right-wing bias and promotion of conspiracy theories, particularly regarding the 2020 election. They have faced legal action for spreading misinformation and have received unfavorable ratings from media bias trackers like Ad Fontes Media and NewsGuard. While they present some factual reporting, their reliability is compromised by the inclusion of opinion and unsubstantiated claims.",
+        "institution_search_references": [
+            "https://en.wikipedia.org/wiki/Newsmax",
+            "https://adfontesmedia.com/newsmax-bias-and-reliability/",
+            "https://www.cnn.com/2023/02/14/media/directv-newsmax-reliable-sources",
+            "https://www.quora.com/Is-Newsmax-a-more-reliable-source-than-Fox-CNN-and-NBC-networks-for-factual-news",
+            "https://www.newsmax.com/politics/canada-mark-carney-tariffs/2025/03/11/id/1202353/"
+        ]
+    },
+    "fact_check_res": [
+        {
+            "alleged_fact": "The Latin Mass has continued to pull new converts and lapsed Catholics into the pews despite Francis' hostility.",
+            "fact_check": "Partly True / Misleading",
+            "fact_check_reason": "While the Latin Mass has seen growth and attracted some new adherents despite the Pope's restrictions, it is misleading to suggest this is a widespread phenomenon, as Latin Mass attendees remain a small minority within the Catholic Church, and the growth's impact on overall conversion and return rates is unclear.",
+            "fact_check_search_references": [
+                "https://www.americamagazine.org/faith/2021/07/16/pope-francis-latin-mass-traditionis-custodes-241072",
+                "https://www.theatlantic.com/ideas/archive/2025/04/latin-mass-pope-francis-church/682354/",
+                "https://medium.com/catholic-way-home/the-not-so-obvious-reason-why-so-many-young-catholics-prefer-the-latin-mass-69ad21376a15",
+                "https://www.nytimes.com/2022/11/15/us/latin-mass-revival.html",
+                "https://crisismagazine.com/opinion/the-growth-of-the-latin-mass-a-survey"
+            ]
+        },
+        {
+            "alleged_fact": "Young men in particular are becoming more religious, a trend connected to a rightward turn in politics.",
+            "fact_check": "Partly True / Misleading",
+            "fact_check_reason": "While evidence suggests young men are becoming relatively more religious compared to young women, the connection to a rightward turn in politics requires further evidence and is presented as a potential association rather than a proven causal link, and available sources focus mostly on conservative evangelical viewpoints.",
+            "fact_check_search_references": [
+                "https://www.nytimes.com/2024/09/23/us/young-men-religion-gen-z.html",
+                "https://www.ncregister.com/commentaries/the-rise-of-religious-young-men",
+                "https://www.nytimes.com/2024/09/27/opinion/religion-gender-divide.html",
+                "https://www.graphsaboutreligion.com/p/the-religion-of-americas-young-adults",
+                "https://nymag.com/intelligencer/article/will-young-men-take-over-american-christianity.html"
+            ]
+        },
+        {
+            "alleged_fact": "In France, the church has just recorded a 45 percent increase over last year in adult baptisms at Easter.",
+            "fact_check": "Verified",
+            "fact_check_reason": "Multiple sources confirm a 45% increase in adult baptisms in France at Easter 2025 compared to the previous year.",
+            "fact_check_search_references": [
+                "https://www.catholicnewsagency.com/news/263349/france-sees-record-10384-adult-baptisms-in-2025-45-percent-increase-as-young-catholics-lead-revival",
+                "https://zenit.org/2025/04/14/france-sees-historic-surge-in-adult-baptisms-young-people-lead-spiritual-revival/",
+                "https://www.linkedin.com/posts/nathanielhurd_france-sees-record-10384-adult-baptisms-activity-7317577541089722369-3F4J",
+                "https://teaminitiation.com/2025/03/a-wave-of-faith/",
+                "https://www.osvnews.com/france-to-see-a-record-17800-catechumens-baptized-at-easter-with-requests-still-pouring-in/"
+            ]
+        }
+    ],
+    "perspective_res": [
+        {
+            "opinion": "The Catholic Church needs a populist pope.",
+            "opposite_opinion": "Pope Francis's encyclical \"Fratelli Tutti\" advocates for universal fraternity and social friendship, urging recognition and love for every person to overcome indifference and build inclusive communities.\n",
+            "opposite_opinion_search_references": [
+                "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20201003_enciclica-fratelli-tutti.html",
+                "https://onlinelibrary.wiley.com/doi/full/10.1111/socf.12842",
+                "https://www.lse.ac.uk/ideas/Assets/Documents/updates/LSE-IDEAS-Understanding-Global-Rise-of-Populism.pdf",
+                "https://www.brookings.edu/articles/putins-no-populist-but-he-can-gain-from-populist-movements-worldwide/",
+                "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/149D94021D735A9BD2E96457F1CA28F8/S1755048319000506a.pdf/the-populist-pope-politics-religion-and-pope-francis.pdf"
+            ]
+        },
+        {
+            "opinion": "Pope Francis was too conservative and did not recognize the upheavals of globalism and the attraction of traditionalism.",
+            "opposite_opinion": "Pope Francis advocates for universal fraternity and social friendship, urging global cooperation and a rejection of ideologies that prioritize individual interests over the common good.\n",
+            "opposite_opinion_search_references": [
+                "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20201003_enciclica-fratelli-tutti.html",
+                "https://www.oceanstatestories.org/q-a-with-medieval-scholar-joelle-rollo-koster/",
+                "https://www.theguardian.com/us-news/2018/sep/25/trump-united-nations-general-assembly-speech-globalism-america",
+                "https://apnews.com/article/c7706b68c9b54b1cb7b06134b31e651f",
+                "https://www.weforum.org/stories/2024/01/davos-24-pope-sends-message-to-professor-klaus-schwab-on-the-occasion-of-the-annual-meeting/"
+            ]
+        },
+        {
+            "opinion": "A church that emphasizes traditional moral teachings in Europe and America, as well as Africa, will grow.",
+            "opposite_opinion": "The Catholic Church's doctrine does not change, but the understanding and presentation of it can develop over time, enriching comprehension without invalidating previous teachings.\n",
+            "opposite_opinion_search_references": [
+                "https://www.csmonitor.com/USA/Politics/2017/1010/Amid-Evangelical-decline-growing-split-between-young-Christians-and-church-elders",
+                "https://reformedjournal.com/2023/05/01/how-the-church-growth-movement-has-de-churched-christians/",
+                "https://link.springer.com/article/10.1007/s10943-023-01900-w",
+                "https://www.vatican.va/roman_curia/pontifical_councils/justpeace/documents/rc_pc_justpeace_doc_20060526_compendio-dott-soc_en.html",
+                "https://www.catholic.com/magazine/online-edition/does-doctrine-change"
+            ]
+        }
+    ],
+    "conclusion_res": {
+        "conclusion": "The article presents a subjective viewpoint with selectively presented facts, some of which are misleading or require further context. While some claims are verifiable, the arguments rely heavily on opinion and lack comprehensive supporting evidence, hindering the overall integrity and fairness of the information presented. The analysis does not showcase the complexity of the reality, presenting a skewed perspective.",
+        "rating": "Average"
+    }
+}

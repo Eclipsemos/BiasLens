@@ -1,15 +1,14 @@
 from cfg import LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY
 from biaslens import BiasLens
-
-
+import json
 
 
 if __name__ == "__main__":
     # Example usage
 
     sample_request = {
-        "page_gross_text": """https://www.newsmax.com/danielmccarthy/pope-francis-catholicism/2025/04/23/id/1208016/
-        After Francis, Catholics Need a Populist Pope\nBy Daniel McCarthy Wednesday, 23 April 2025 12:04 PM EDT
+        "page_url": "https://www.newsmax.com/danielmccarthy/pope-francis-catholicism/2025/04/23/id/1208016/",
+        "page_gross_text": """After Francis, Catholics Need a Populist Pope\nBy Daniel McCarthy Wednesday, 23 April 2025 12:04 PM EDT
         But even as Francis took a gentle approach to those who insisted the church "modernize," he cracked down hard on those in the West who were drawn to Catholicism precisely for its traditionalism, particularly those who wished to attend the Latin Mass.
         pope francis at mass holding up a large silver cup
         Pope Francis was meant to be a pontiff for the age of globalization.
@@ -43,6 +42,22 @@ if __name__ == "__main__":
     }
 
     lens = BiasLens(sample_request, LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY)
-    results = lens.run()
 
-    print(results)
+    article_info, article_intent, article_tendency = lens.article_pre_analysis()
+    institution_bias = lens.institution_bias_analysis()
+    fact_check_res = lens.fact_check()
+    perspective_res = lens.get_opposite_perspective()
+    conclusion_res = lens.get_conclusion()
+    result = {
+        "article_info": article_info,
+        "article_intent": article_intent,
+        "article_tendency": article_tendency,
+        "institution_bias": institution_bias,
+        "fact_check_res": fact_check_res,
+        "perspective_res": perspective_res,
+        "conclusion_res": conclusion_res
+    }
+    print(json.dumps(result, indent=4))
+    # save the result to a file
+    with open("test_result.json", "w") as f:
+        json.dump(result, f, indent=4)

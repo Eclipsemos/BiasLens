@@ -20,7 +20,7 @@ class BiasLens:
         self.LLM_MODEL_NAME = LLM_MODEL_NAME
         self.retriever = QueryWebRetriever(LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY)
         self.page_gross_text = req.get("page_gross_text")
-        self.results = {}
+        self.page_url = req.get("page_url")
 
 
     def article_pre_analysis(self):
@@ -30,45 +30,48 @@ class BiasLens:
 
         # read the article
         article_pre_analyzer.send_message(
-            prompt_lib["article_reading_prompt"].format(article=self.page_gross_text)
+            prompt_lib["article_reading_prompt"].format(article='[' + self.page_url + '] ' + self.page_gross_text)
         )
 
-        article_info = {}
-        for prompt in [
-            "article_information_extract_prompt",
-            "article_expressive_intent_extract_prompt"
-        ]:
-            res = article_pre_analyzer.send_message(prompt_lib[prompt])
-            res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
-            res = json.loads(res)
-            article_info.update(res)
-        self.results["article_info"] = article_info
-        
-        if "opinion" in article_info.get("expressive_intent").lower() or article_info.get("expressive_intent") == "":
-            prompt_queue = [
-                "op_argument_extract_prompt",
-                "op_tendency_extract_prompt"
-            ]
-        else:
-            prompt_queue = [
-                "news_argument_extract_prompt",
-                "news_tendency_extract_prompt"
-            ]
-        article_arguments = {}
-        for prompt in prompt_queue:
-            res = article_pre_analyzer.send_message(prompt_lib[prompt])
-            res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
-            res = json.loads(res)
-            article_arguments.update(res)
-        
-        self.results["article_arguments"] = article_arguments
 
-        return article_info, article_arguments
+
+        self.article_info = {}
+        res = article_pre_analyzer.send_message(prompt_lib["article_information_extract_prompt"])
+        res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
+        self.article_info = json.loads(res)
+
+        self.article_intent = {}
+        res = article_pre_analyzer.send_message(prompt_lib["article_expressive_intent_extract_prompt"])
+        res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
+        self.article_intent = json.loads(res)
+
+        
+        if "opinion" in self.article_intent.get("expressive_intent").lower() or self.article_intent.get("expressive_intent") == "":
+            prompt_prefix = "op"
+        else:
+            prompt_prefix = "news"
+        
+        self._article_arguments = {}
+        res = article_pre_analyzer.send_message(prompt_lib[f"{prompt_prefix}_argument_extract_prompt"])
+        res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
+        self._article_arguments = json.loads(res)
+
+        self.article_tendency = {}
+        res = article_pre_analyzer.send_message(prompt_lib["article_tendency_extract_prompt"])
+        res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
+        self.article_tendency["entities"] = self.article_info.get("entities", [])
+        self.article_tendency.update(json.loads(res))
+        # self.article_info.pop("entities", None)
+
+
+        return self.article_info, self.article_intent, self.article_tendency
 
     
     def institution_bias_analysis(self):
         try:
-            institution = self.results.get("article_info", {}).get("institution")
+            self.institution_bias = {}
+
+            institution = self.article_info.get("institution")
             if not institution:
                 print("Institution name not found in the article.")
                 return {}
@@ -88,10 +91,11 @@ class BiasLens:
                 contents = prompt_lib["institution_survey_prompt"].format(institution=institution, search_results=compact_search_results),
             )
             res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
-            res = json.loads(res)
-            res["institution_search_references"] = [s["displayLink"] for s in search_results]
-            self.results["institution_bias_analysis"] = res
-            return res
+            self.institution_bias["institution"] = institution
+            # self.article_info.pop("institution", None)
+            self.institution_bias.update(json.loads(res))
+            self.institution_bias["institution_search_references"] = [s["link"] for s in search_results]
+            return self.institution_bias
 
         except Exception as e:
             print(f"Error during prior bias analysis: {e}")
@@ -104,46 +108,107 @@ class BiasLens:
         # Cross-reference with credible online sources and apply logical reasoning.
         # Categorize each fact as Verified, Partly True / Misleading, False, Disputed / Inconclusive, or Unverifiable.
         # Include citations for all supporting information.
-        pass
+        self.fact_check_res = []
+        for alleged_fact, query in zip(self._article_arguments.get("alleged_facts", []), self._article_arguments.get("verify_fact_queries", [])):
+            search_results = self.retriever.get_retrieval_results(query, search_depth=5)
+            if not search_results:
+                print(f"No search results found for query: {query}")
+                continue
+            compact_search_results = "\n----\n".join([f"{i+1}. {s['title']}: {s['displayLink']}\n{s['summary']}" for i, s in enumerate(search_results)])
+
+            client = genai.Client(api_key=self.LLM_API_KEY)
+            res = client.models.generate_content(
+                model=self.LLM_MODEL_NAME,
+                config=types.GenerateContentConfig(
+                    system_instruction="You are an AI fact-checker.",
+                ),
+                contents = prompt_lib["fact_check_prompt"].format(alleged_fact=alleged_fact, search_results=compact_search_results),
+            )
+            res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
+            res = json.loads(res)
+            f_r = {}
+            f_r["alleged_fact"] = alleged_fact
+            f_r.update(res)
+            f_r["fact_check_search_references"] = [s["link"] for s in search_results]
+            self.fact_check_res.append(f_r)
+            
+        return self.fact_check_res
+
+
 
 
     def get_opposite_perspective(self):
-        # TODO:
-        # Identify opposing viewpoints for each opinion expressed in the article.
-        # Search online for credible sources presenting counterarguments.
-        # Summarize key points and provide citations.
-        pass
+        if not ("opinion" in self.article_intent.get("expressive_intent").lower()):
+            print("The article is not an opinion piece, so no opposite perspective is needed.")
+            return []
 
-    def get_bias_conclusion(self):
-        # TODO:
-        # Summarize the overall bias of the article.
-        # 
-        # For opinion content, evaluate based on:
-        # - Accuracy of facts
-        # - Adequacy of supporting evidence
-        # - Logical coherence of arguments
-        # - Overall integrity and fairness of the information presented
-        #
-        # For news reporting, evaluate based on:
-        # - Factual accuracy
-        # - Presence of guiding or selective framing
-        # - Neutrality of language
-        # - Overall integrity and balance of the information presented
+        self.perspective_res = []
+        for opinion, query in zip(self._article_arguments.get("opinions", []), self._article_arguments.get("opposite_opinion_queries", [])):
+            search_results = self.retriever.get_retrieval_results(query, search_depth=5)
+            if not search_results:
+                print(f"No search results found for query: {query}")
+                continue
+            compact_search_results = "\n----\n".join([f"{i+1}. {s['title']}: {s['displayLink']}\n{s['summary']}" for i, s in enumerate(search_results)])
 
-        pass
-
-
-    def run(self):
-
-        self.article_pre_analysis()
-        self.institution_bias_analysis()
-        self.fact_check()
-        self.get_opposite_perspective()
-        self.get_bias_conclusion()
-
-        return self.results
+            client = genai.Client(api_key=self.LLM_API_KEY)
+            op_opinion = client.models.generate_content(
+                model=self.LLM_MODEL_NAME,
+                config=types.GenerateContentConfig(
+                    system_instruction="You are an AI opinion summarizer.",
+                ),
+                contents = prompt_lib["opposite_search_results_summary_prompt"].format(search_results=compact_search_results),
+            )
+            op_opinion = op_opinion.text
+            res = {}
+            res["opinion"] = opinion
+            res["opposite_opinion"] = op_opinion
+            res["opposite_opinion_search_references"] = [s["link"] for s in search_results]
+            
+            self.perspective_res.append(res)
+        
+        return self.perspective_res
+        
 
 
+
+    def get_conclusion(self):
+        client = genai.Client(api_key=self.LLM_API_KEY)
+        if "opinion" in self.article_intent.get("expressive_intent").lower():
+            prompt = prompt_lib["op_conclusion_prompt"].format(
+                expressive_intent=self.article_intent.get("expressive_intent"),
+                institution=self.article_info.get("institution"),
+                article = self.page_gross_text,
+                language_style=self.article_tendency.get("language_style"),
+                alleged_facts = "\n".join([f"{i+1}. {f['alleged_fact']}: {f['fact_check']}. {f['fact_check_reason']}" for i, f in enumerate(self.fact_check_res)]),
+                opinions = "\n".join([f"{i+1}. [Content Opinion]: {o['opinion']}; [Opposite Opinion]: {o['opposite_opinion']}" for i, o in enumerate(self.perspective_res)])
+            )
+        else:
+            prompt = prompt_lib["news_conclusion_prompt"].format(
+                expressive_intent=self.article_intent.get("expressive_intent"),
+                institution=self.article_info.get("institution"),
+                article = self.page_gross_text,
+                language_style=self.article_tendency.get("language_style"),
+                alleged_facts = "\n".join([f"{i+1}. {f['alleged_fact']}: {f['fact_check']}. {f['fact_check_reason']}" for i, f in enumerate(self.fact_check_res)]),
+            )
+
+        bias_conclusion = client.models.generate_content(
+            model=self.LLM_MODEL_NAME,
+            config=types.GenerateContentConfig(
+                system_instruction="You are an AI journalist specializing in analyzing the quality of news articles and online content.",
+            ),
+            contents = prompt
+        )
+        
+        bias_conclusion = bias_conclusion.text
+        bias_conclusion = bias_conclusion.strip().removeprefix("```json").removesuffix("```").strip()
+        bias_conclusion = json.loads(bias_conclusion)
+
+        return bias_conclusion
+
+        
+
+
+        
 
 
         

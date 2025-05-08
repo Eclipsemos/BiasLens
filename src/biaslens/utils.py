@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from google import genai
 from google.genai import types
+from prompt_lib import prompt_lib
 
 
 class QueryWebRetriever:
@@ -40,7 +41,7 @@ class QueryWebRetriever:
     def _get_web_content(self, url, max_content_length=50000):
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                 "Accept": "application/json",
                 "Accept-Language": "en-US,en;q=0.9",
                 "Connection": "keep-alive"
@@ -63,11 +64,10 @@ class QueryWebRetriever:
 
     def _get_web_summary(self, content, query, max_summary_length=500):
         try:
-            prompt = (
-                f"Summarize the following web content related to '{query}' "
-                f"in {max_summary_length} words or fewer. Retain key information, data, and statistics while keeping the summary concise.\n"
-                "Please only give the summary and nothing else. Here is the raw content:\n"
-                f"{content}\n"
+            prompt = prompt_lib["search_summary_prompt"].format(
+                query=query,
+                max_summary_length=max_summary_length,
+                content=content
             )
             summary = self.client.models.generate_content(
                 model=self.llm_model_name,
@@ -94,10 +94,13 @@ class QueryWebRetriever:
             content = self._get_web_content(link)
             if content:
                 summary = self._get_web_summary(content, query)
-                results.append({
-                    'title': title,
-                    'summary': summary,
-                    'displayLink': displayLink,
-                })
+            else:
+                summary = title + '\n' + item.get('snippet', '')
+            results.append({
+                'title': title,
+                'summary': summary,
+                'displayLink': displayLink,
+                'link': link
+            })
         return results
 
