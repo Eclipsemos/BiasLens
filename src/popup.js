@@ -92,21 +92,45 @@ function formatBiasAnalysis(biasAnalysis) {
         html += `<p><strong>Type:</strong> ${biasAnalysis.article_intent.expressive_intent || 'N/A'}</p>`;
     }
 
+    // Article Tendency
+    if (biasAnalysis.article_tendency) {
+        html += '<h3>Article Tendency</h3>';
+        html += `<p><strong>Language Style:</strong> ${biasAnalysis.article_tendency.language_style || 'N/A'}</p>`;
+        if (biasAnalysis.article_tendency.entities && biasAnalysis.article_tendency.entities_tendency) {
+            html += '<p><strong>Entity Analysis:</strong></p><ul>';
+            for (let i = 0; i < biasAnalysis.article_tendency.entities.length; i++) {
+                html += `<li>${biasAnalysis.article_tendency.entities[i]}: ${biasAnalysis.article_tendency.entities_tendency[i]}</li>`;
+            }
+            html += '</ul>';
+        }
+    }
+
     // Institution Bias
     if (biasAnalysis.institution_bias) {
         html += '<h3>Institution Analysis</h3>';
         html += `<p><strong>Institution:</strong> ${biasAnalysis.institution_bias.institution || 'N/A'}</p>`;
+        html += `<p><strong>Type:</strong> ${biasAnalysis.institution_bias.institution_type || 'N/A'}</p>`;
         html += `<p><strong>Credibility:</strong> ${biasAnalysis.institution_bias.credibility || 'N/A'}</p>`;
         if (biasAnalysis.institution_bias.credibility_reason) {
             html += `<p><strong>Reason:</strong> ${biasAnalysis.institution_bias.credibility_reason}</p>`;
+        }
+        if (biasAnalysis.institution_bias.institution_search_references) {
+            html += '<div class="references-section">';
+            html += '<h4>References:</h4><ul>';
+            biasAnalysis.institution_bias.institution_search_references.forEach(ref => {
+                html += `<li><a href="${ref}" target="_blank">${ref}</a></li>`;
+            });
+            html += '</ul></div>';
         }
     }
 
     // Conclusion
     if (biasAnalysis.conclusion) {
-        html += '<h3>Overall Analysis</h3>';
+        html += '<div class="conclusion-section">';
+        html += '<h3>Summary</h3>';
         html += `<p><strong>Rating:</strong> ${biasAnalysis.conclusion.rating || 'N/A'}</p>`;
         html += `<p>${biasAnalysis.conclusion.conclusion || 'N/A'}</p>`;
+        html += '</div>';
     }
 
     html += '</div>';
@@ -124,8 +148,18 @@ function formatFactCheck(factChecks) {
             <h4>Fact ${index + 1}</h4>
             <p><strong>Statement:</strong> ${fact.alleged_fact}</p>
             <p><strong>Verification:</strong> ${fact.fact_check}</p>
-            <p><strong>Reasoning:</strong> ${fact.fact_check_reason}</p>
-        </div>`;
+            <p><strong>Reasoning:</strong> ${fact.fact_check_reason}</p>`;
+        
+        if (fact.fact_check_search_references) {
+            html += '<div class="references-section">';
+            html += '<h5>References:</h5><ul>';
+            fact.fact_check_search_references.forEach(ref => {
+                html += `<li><a href="${ref}" target="_blank">${ref}</a></li>`;
+            });
+            html += '</ul></div>';
+        }
+        
+        html += '</div>';
     });
     html += '</div>';
     return html;
@@ -154,6 +188,28 @@ function displayOppositePerspectives(perspectives) {
         
         perspectiveDiv.appendChild(titleLink);
         perspectiveDiv.appendChild(summary);
+
+        if (perspective.opposite_opinion_search_references) {
+            const referencesDiv = document.createElement('div');
+            referencesDiv.className = 'references-section';
+            const referencesTitle = document.createElement('h5');
+            referencesTitle.textContent = 'References:';
+            referencesDiv.appendChild(referencesTitle);
+
+            const referencesList = document.createElement('ul');
+            perspective.opposite_opinion_search_references.forEach(ref => {
+                const refItem = document.createElement('li');
+                const refLink = document.createElement('a');
+                refLink.href = ref;
+                refLink.target = '_blank';
+                refLink.textContent = ref;
+                refItem.appendChild(refLink);
+                referencesList.appendChild(refItem);
+            });
+            referencesDiv.appendChild(referencesList);
+            perspectiveDiv.appendChild(referencesDiv);
+        }
+        
         container.appendChild(perspectiveDiv);
     });
 } 
