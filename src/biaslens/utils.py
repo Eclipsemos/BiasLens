@@ -1,16 +1,15 @@
-
 import requests
 from bs4 import BeautifulSoup
-from google import genai
-from google.genai import types
-from prompt_lib import prompt_lib
+import google.generativeai as genai
+from google.generativeai import types
+from .prompt_lib import prompt_lib
 
 
 class QueryWebRetriever:
     # This class provides methods to retrieve information from the web using Google Custom Search API.
 
     def __init__(self, LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY):
-        self.client = genai.Client(api_key=LLM_API_KEY)
+        genai.configure(api_key=LLM_API_KEY)
         self.llm_model_name = LLM_MODEL_NAME
         self.search_engine_id = SEARCH_ENGINE_ID
         self.search_api_key = SEARCH_API_KEY
@@ -69,14 +68,9 @@ class QueryWebRetriever:
                 max_summary_length=max_summary_length,
                 content=content
             )
-            summary = self.client.models.generate_content(
-                model=self.llm_model_name,
-                config=types.GenerateContentConfig(
-                    system_instruction="You are an AI web assistant."
-                ),
-                contents=prompt
-            )
-            return summary.text
+            model = genai.GenerativeModel(self.llm_model_name)
+            response = model.generate_content(prompt)
+            return response.text
 
 
         except Exception as e:
