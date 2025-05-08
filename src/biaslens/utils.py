@@ -1,26 +1,8 @@
-from google import genai
+
 import requests
-
-
-
-class LLMChat:
-    # This class provides methods to interact with the Google Gemini LLM API.
-
-    def __init__(self, LLM_API_KEY, LLM_MODEL_NAME):
-        self.client = genai.Client(api_key=LLM_API_KEY)
-        self.chat = self.client.chats.create(model=LLM_MODEL_NAME)
-
-
-    def read_content(self, pre_prompt, content):
-        prompt = pre_prompt + "\n" + content
-        response = self.chat.send_message(prompt)
-
-        return response.text
-        
-    def response(self, prompt):
-        response = self.chat.send_message(prompt)
-        return response.text
-
+from bs4 import BeautifulSoup
+from google import genai
+from google.genai import types
 
 
 class QueryWebRetriever:
@@ -56,13 +38,66 @@ class QueryWebRetriever:
 
 
     def _get_web_content(self, url, max_content_length=50000):
-        pass
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                "Accept": "application/json",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Connection": "keep-alive"
+            }
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
 
-    def _get_web_summary(self, content, max_summary_length=500):
-        pass
+            soup = BeautifulSoup(response.content, 'html.parser')
+            for script_or_style in soup(['script', 'style']):
+                script_or_style.decompose()
 
-    def get_retrieval_results(self, query, search_depth=10):
+            text = soup.get_text(separator=' ', strip=True)
+            characters = max_content_length * 4
+            text = text[:characters]
+            return text
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to retrieve {url}: {e}")
+            return None
+
+
+    def _get_web_summary(self, content, query, max_summary_length=500):
+        try:
+            prompt = (
+                f"Summarize the following web content related to '{query}' "
+                f"in {max_summary_length} words or fewer. Retain key information, data, and statistics while keeping the summary concise.\n"
+                "Please only give the summary and nothing else. Here is the raw content:\n"
+                f"{content}\n"
+            )
+            summary = self.client.models.generate_content(
+                model=self.llm_model_name,
+                config=types.GenerateContentConfig(
+                    system_instruction="You are an AI web assistant."
+                ),
+                contents=prompt
+            )
+            return summary.text
+
+
+        except Exception as e:
+            print(f"Error during summarization: {e}")
+            return None
+
+
+    def get_retrieval_results(self, query, search_depth=5):
+        results = []
         searched_items = self._search(query, search_depth)
         for item in searched_items:
-            print(item)
-    
+            title = item.get('title')
+            displayLink = item.get('displayLink')
+            link = item.get('link')
+            content = self._get_web_content(link)
+            if content:
+                summary = self._get_web_summary(content, query)
+                results.append({
+                    'title': title,
+                    'summary': summary,
+                    'displayLink': displayLink,
+                })
+        return results
+

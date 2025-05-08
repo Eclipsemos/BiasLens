@@ -2,7 +2,8 @@ prompt_lib = {
 
     "article_reading_prompt" : (
         "You are an agent proficient in journalism. Carefully read the following article from news websites or social media, and retain all relevant information and details. "
-        "Please hold on — I'll ask you questions about it shortly. Here is the article:\n"
+        "Please hold on — I'll ask you questions about it shortly. Here is the article:\n\n"
+        "{article}"
     ),
 
 
@@ -108,5 +109,32 @@ prompt_lib = {
         
         "Respond only with a JSON object in the following format (e.g.):\n"
         "{\"language_style\": \"Subjective / Emotional\", \"political_tendency\": \"\", \"entities_tendency\": [\"Positive\", \"Neutral or No Presetting Tendency\"]}"
+    ),
+
+
+
+
+    "institution_survey_prompt" : (
+        "I will provide search results from Google. Please review the information and assess the **Type** and **Credibility Rating** of \"{institution}\" using the following categories:\n\n"
+    
+        "- **Type**:\n"
+        "  1. \"Commercial\"\n"
+        "  2. \"Government Affiliated\"\n"
+        "  3. \"Independent\"\n"
+        "  4. \"Citizen Journalism / KOL\"\n"
+        "  5. \"Other\"\n\n"
+        
+        "- **Credibility Rating**:\n"
+        "  1. \"High\"\n"
+        "  2. \"Medium\"\n"
+        "  3. \"Low\"\n"
+        "  4. \"Unverifiable\"\n\n"
+
+        "Please also provide a brief explanation (maximum 3 sentences) justifying your credibility rating.\n\n"
+
+        "Respond **only** with a JSON object in the following format. Example:\n"
+        "{{\"institution_type\": \"Commercial\", \"credibility\": \"High\", \"credibility_reason\": \"The NOTBBC has high credibility due to strict editorial standards, independent regulation by Ofcom, and a strong track record of balanced, fact-checked reporting.\"}}\n\n"
+        
+        "Here are the search results:\n{search_results}"
     )
 }
