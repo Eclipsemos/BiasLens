@@ -10,12 +10,12 @@ prompt_lib = {
     "article_information_extract_prompt" : (
         "Now based on the content provided above, extract and return the following information in JSON format:\n"
         "- The name of the primary news organization, website, or account responsible for the publication, if applicable. "
-        "If it is not from an institution but from an individual platform/account, please fill in the individual's name.\n"
+        "- The name of the author/commentor, if applicable. Choose the first one if there are multiple authors.\n"
         "- The time or date of the described events (use publication time if unknown)\n"
         "- A concise abstract (1–3 sentence summary)\n"
         "- The list of main entities covered (e.g., individuals, organizations, or groups), with a maximum of 3.\n\n"
         "For any unknown or not applicable information, leave it empty (\"\" or []) as a placeholder. Respond only with a JSON object in the following schema:\n"
-        "{\"institution\": \"xxx\", \"time\": \"xxx\", \"abstract\": \"xxx\", \"entities\": [\"xxx\", \"xxx\", ...]}\n"
+        "{\"institution\": \"xxx\", \"author\": \"xxx\", \"time\": \"xxx\", \"abstract\": \"xxx\", \"entities\": [\"xxx\", \"xxx\", ...]}\n"
     ),
 
     "article_expressive_intent_extract_prompt": (
@@ -49,7 +49,7 @@ prompt_lib = {
         "Extract the key opinions and alleged facts from the article. "
         "An *opinion* is a subjective statement or suggestion made by the author/commentator that cannot be definitively classified as true or false. "
         "An *alleged fact* is a statement, assertion, or conclusion that can be verified as true or false. "
-        "Include only the most important opinions and alleged facts, limiting each to a maximum of 3. Ensure each entry is concise and clearly worded. "
+        "Include only key opinions and alleged facts that are closely relevant to the content's arguments, limiting each to a maximum of 3. Ensure each entry is concise and clearly worded. "
         "If no opinions or alleged facts are present, leave the respective lists empty.\n\n"
         "To facilitate further research:\n"
         "- For each opinion, provide a google search query that could help find opposing viewpoints online.\n"
@@ -123,14 +123,18 @@ prompt_lib = {
         "I will provide search results from Google. Please review the information and assess the **Fact Check** of \"{alleged_fact}\" using the following categories:\n\n"
     
         "- **Fact Check**:\n"
-        "  1. \"Verified\"\n"
-        "  2. \"Partly True / Misleading\"\n"
-        "  3. \"False\"\n"
-        "  4. \"Disputed / Inconclusive\"\n"
-        "  5. \"Unverifiable\"\n\n"
+        "  1. \"Verified True\"\n"
+        "  2. \"Likely True\"\n"
+        "  3. \"Partly True / Misleading\"\n"
+        "  4. \"False\"\n"
+        "  5. \"Disputed / Inconclusive\"\n"
+        "  6. \"Unverifiable\"\n\n"
 
-        "Please also provide a very concise explanation (1 sentence) justifying your fact check.\n\n"
-
+        "Please also provide a very concise explanation (1 sentence) justifying your fact check.\n"
+        "Note that your knowledge only extends up to 2024, and today's date is {current_date}. This content is written in {article_time}. "
+        "Thus, avoid relying too much on your outdated information. Prioritize clues from the online search results, as they better reflect the current situation. "
+        "Normally, alleged facts are unlikely false given their wide dissemination. But misinformation remains possible.\n\n"
+        "Sometimes the search results can be irrelevant or insufficient to verify the alleged fact."
         "Respond **only** with a JSON object in the following format. Example:\n"
         "{{\"fact_check\": \"Verified\", \"fact_check_reason\": \"The US has a trade deficit with China, as confirmed by multiple sources.\"}}\n\n"
         

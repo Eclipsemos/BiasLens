@@ -1,6 +1,7 @@
 import json
 import google.generativeai as genai
 from google.generativeai import types
+from datetime import datetime
 
 from .prompt_lib import prompt_lib
 from .utils import QueryWebRetriever
@@ -105,7 +106,7 @@ class BiasLens:
 
             model = genai.GenerativeModel(self.LLM_MODEL_NAME)
             res = model.generate_content(
-                prompt_lib["fact_check_prompt"].format(alleged_fact=alleged_fact, search_results=compact_search_results)
+                prompt_lib["fact_check_prompt"].format(alleged_fact=alleged_fact, current_date=datetime.now().strftime("%B, %Y"), article_time=self.article_info["time"], search_results=compact_search_results)
             )
             res = res.text.strip().removeprefix("```json").removesuffix("```").strip()
             res = json.loads(res)

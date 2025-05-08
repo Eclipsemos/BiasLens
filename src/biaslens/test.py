@@ -1,5 +1,5 @@
-from cfg import LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY
-from biaslens import BiasLens
+from .cfg import LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY
+from .biaslens import BiasLens
 import json
 
 
