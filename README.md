@@ -2,6 +2,44 @@
 
 BiasLens is a Chrome extension that helps users analyze news articles for bias, verify facts, and explore alternative perspectives. It provides a comprehensive analysis of news content, including article intent, institutional bias, fact-checking, and opposing viewpoints.
 
+## Architecture
+
+```mermaid
+graph TD
+    A[Chrome Extension] --> B[Content Script]
+    B --> C[Article Content]
+    A --> D[Popup UI]
+    D --> E[Analyze Button]
+    E --> F[Flask Backend]
+    F --> G[Article Analysis]
+    G --> H[Bias Analysis]
+    G --> I[Fact Check]
+    G --> J[Institution Analysis]
+    G --> K[Alternative Perspectives]
+    H --> L[Results Display]
+    I --> L
+    J --> L
+    K --> L
+    L --> D
+
+    subgraph Frontend
+        A
+        B
+        D
+        E
+        L
+    end
+
+    subgraph Backend
+        F
+        G
+        H
+        I
+        J
+        K
+    end
+```
+
 ## Features
 
 - **Bias Analysis**: Analyzes articles for potential bias and framing
@@ -94,6 +132,19 @@ BiasLens/
 │   └── config.cfg          # Configuration file
 └── requirements.txt        # Python dependencies
 ```
+
+### Dependencies
+The project uses the following main dependencies:
+- **Frontend**:
+  - Chrome Extension APIs
+  - HTML/CSS/JavaScript
+- **Backend**:
+  - Flask (Web server)
+  - Flask-CORS (Cross-origin resource sharing)
+  - Requests (HTTP client)
+  - BeautifulSoup4 (HTML parsing)
+  - Newspaper3k (Article extraction)
+  - NLTK (Natural Language Processing)
 
 ### Contributing
 1. Fork the repository
