@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import google.generativeai as genai
 from google.generativeai import types
+from html import unescape
+
 from .prompt_lib import prompt_lib
 
 
@@ -35,6 +37,40 @@ class QueryWebRetriever:
         except requests.exceptions.RequestException as e:
             print(f"Error during search: {e}")
             return []
+    
+    def _get_reddit_content(self, url: str, headers, max_depth = 2) -> str:
+        json_url = url.rstrip("/") + "/.json"
+        r = requests.get(json_url, params={"raw_json": 1}, headers=headers, timeout=5)
+        r.raise_for_status()
+
+        post_listing, comment_listing = r.json()
+        post  = post_listing["data"]["children"][0]["data"]
+        lines = []
+
+        def html_to_text(html: str) -> str:
+            return BeautifulSoup(unescape(html), "html.parser").get_text(" ", strip=True)
+
+        title = post["title"]
+        body  = post.get("selftext_html") or ""
+        lines.append(f"### {title}\n")
+        if body:
+            lines.append(html_to_text(body) + "\n")
+
+        def walk(children, depth=0):
+            if depth >= max_depth:
+                return
+            for item in children:
+                if item["kind"] != "t1":
+                    continue
+                data   = item["data"]
+                author = data["author"]
+                text   = html_to_text(data["body_html"])
+                lines.append("  " * depth + f"- u/{author}: {text}")
+                if data.get("replies"):
+                    walk(data["replies"]["data"]["children"], depth + 1)
+
+        walk(comment_listing["data"]["children"])
+        return "\n".join(lines)
 
 
     def _get_web_content(self, url, max_content_length=50000):
@@ -45,14 +81,18 @@ class QueryWebRetriever:
                 "Accept-Language": "en-US,en;q=0.9",
                 "Connection": "keep-alive"
             }
-            response = requests.get(url, headers=headers, timeout=10)
-            response.raise_for_status()
+            if "www.reddit.com" in url:
+                text = self._get_reddit_content(url, headers)
+            elif "www.nbcnews.com" in url or "www.newsmax.com" in url: # cannot access
+                return None
+            else:
+                response = requests.get(url, headers=headers, timeout=5)
+                response.raise_for_status()
+                soup = BeautifulSoup(response.content, 'html.parser')
+                for script_or_style in soup(['script', 'style']):
+                    script_or_style.decompose()
+                text = soup.get_text(separator=' ', strip=True)
 
-            soup = BeautifulSoup(response.content, 'html.parser')
-            for script_or_style in soup(['script', 'style']):
-                script_or_style.decompose()
-
-            text = soup.get_text(separator=' ', strip=True)
             characters = max_content_length * 4
             text = text[:characters]
             return text
