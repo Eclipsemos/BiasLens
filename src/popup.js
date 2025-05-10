@@ -44,12 +44,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const analysisResult = await analysisResponse.json();
 
                     // Display the analysis results
-                    const biasAnalysis = analysisResult.bias_analysis;
-                    document.getElementById('bias-analysis').innerHTML = formatBiasAnalysis(biasAnalysis);
+                    document.getElementById('information').innerHTML = formatInformation(analysisResult);
+                    document.getElementById('institution').innerHTML = formatInstitution(analysisResult.institution_bias);
+                    document.getElementById('stance').innerHTML = formatStance(analysisResult.article_tendency);
                     document.getElementById('fact-check').innerHTML = formatFactCheck(analysisResult.fact_check);
-                    
-                    // Display opposite perspectives
-                    displayOppositePerspectives(analysisResult.opposite_perspectives);
+                    document.getElementById('opposite-perspectives').innerHTML = formatOppositePerspectives(analysisResult.opposite_perspectives);
+                    document.getElementById('conclusion').innerHTML = formatConclusion(analysisResult.conclusion);
                     
                     // Show results
                     loadingDiv.classList.add('hidden');
@@ -75,71 +75,100 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function formatBiasAnalysis(biasAnalysis) {
+
+function formatInformation(analysisResult) {
     let html = '<div class="analysis-section">';
     
-    // Article Info
-    if (biasAnalysis.article_info) {
-        html += '<h3>Article Information</h3>';
-        html += `<p><strong>Title:</strong> ${biasAnalysis.article_info.title || biasAnalysis.article_info.abstract || 'N/A'}</p>`;
-        html += `<p><strong>Author:</strong> ${biasAnalysis.article_info.author || 'N/A'}</p>`;
-        html += `<p><strong>Date:</strong> ${biasAnalysis.article_info.time || biasAnalysis.article_info.date || 'N/A'}</p>`;
+    if (analysisResult.article_info.author) {
+        html += `<p><strong>Author:</strong> ${analysisResult.article_info.author || 'N/A'}</p>`;
     }
-
-    // Article Intent
-    if (biasAnalysis.article_intent) {
-        html += '<h3>Article Intent</h3>';
-        html += `<p><strong>Type:</strong> ${biasAnalysis.article_intent.expressive_intent || 'N/A'}</p>`;
+    if (analysisResult.article_info.time) {
+        html += `<p><strong>Date:</strong> ${analysisResult.article_info.time || 'N/A'}</p>`;
     }
-
-    // Article Tendency
-    if (biasAnalysis.article_tendency) {
-        html += '<h3>Article Tendency</h3>';
-        html += `<p><strong>Language Style:</strong> ${biasAnalysis.article_tendency.language_style || 'N/A'}</p>`;
-        if (biasAnalysis.article_tendency.entities && biasAnalysis.article_tendency.entities_tendency) {
-            html += '<p><strong>Entity Analysis:</strong></p><ul>';
-            for (let i = 0; i < biasAnalysis.article_tendency.entities.length; i++) {
-                html += `<li>${biasAnalysis.article_tendency.entities[i]}: ${biasAnalysis.article_tendency.entities_tendency[i]}</li>`;
-            }
-            html += '</ul>';
+    if (analysisResult.article_intent) {
+        html += `<p><strong>Content Type:</strong> ${analysisResult.article_intent.expressive_intent || 'N/A'}</p>`;
+    }
+    if (analysisResult.article_tendency){
+        if (analysisResult.article_tendency.language_style) {
+            html += `<p><strong>Language Style:</strong> ${analysisResult.article_tendency.language_style || 'N/A'}</p>`;
         }
     }
-
-    // Institution Bias
-    if (biasAnalysis.institution_bias) {
-        html += '<h3>Institution Analysis</h3>';
-        html += `<p><strong>Institution:</strong> ${biasAnalysis.institution_bias.institution || 'N/A'}</p>`;
-        html += `<p><strong>Type:</strong> ${biasAnalysis.institution_bias.institution_type || 'N/A'}</p>`;
-        html += `<p><strong>Credibility:</strong> ${biasAnalysis.institution_bias.credibility || 'N/A'}</p>`;
-        if (biasAnalysis.institution_bias.credibility_reason) {
-            html += `<p><strong>Reason:</strong> ${biasAnalysis.institution_bias.credibility_reason}</p>`;
-        }
-        if (biasAnalysis.institution_bias.institution_search_references) {
-            html += '<div class="references-section">';
-            html += '<h4>References:</h4><ul>';
-            biasAnalysis.institution_bias.institution_search_references.forEach(ref => {
-                html += `<li><a href="${ref}" target="_blank">${ref}</a></li>`;
-            });
-            html += '</ul></div>';
-        }
-    }
-
-    // Conclusion
-    if (biasAnalysis.conclusion) {
-        html += '<div class="conclusion-section">';
-        html += '<h3>Summary</h3>';
-        html += `<p><strong>Rating:</strong> ${biasAnalysis.conclusion.rating || 'N/A'}</p>`;
-        html += `<p>${biasAnalysis.conclusion.conclusion || 'N/A'}</p>`;
-        html += '</div>';
+    if (analysisResult.article_info.abstract) {
+        html += `<p><strong>Abstract:</strong> ${analysisResult.article_info.abstract || 'N/A'}</p>`;
     }
 
     html += '</div>';
     return html;
 }
 
+
+function formatInstitution(institutionBias) {
+    if (!institutionBias) {
+        return '<p>No institution found in this content.</p>';
+    }
+
+    const credibility = (institutionBias.credibility || '').toLowerCase(); // 'low' | 'medium' | 'high'
+
+
+    const levelBar = `
+        <span class="level-bar">
+            <span class="level-segment low   ${credibility === 'low'    ? 'active' : ''}"></span>
+            <span class="level-segment medium ${credibility === 'medium' ? 'active' : ''}"></span>
+            <span class="level-segment high   ${credibility === 'high'   ? 'active' : ''}"></span>
+        </span>
+    `;
+
+    return `
+        <div class="institution-section">
+            <p><strong>Institution:</strong> ${institutionBias.institution || 'N/A'}</p>
+            <p><strong>Type:</strong> ${institutionBias.institution_type || 'N/A'}</p>
+
+
+            <p class="credibility-row">
+                <strong>Credibility:</strong>
+                <span class="credibility-text">${institutionBias.credibility || 'N/A'}</span>
+                ${levelBar}
+            </p>
+
+            ${institutionBias.credibility_reason
+                ? `<p><strong>Reason:</strong> ${institutionBias.credibility_reason}</p>`
+                : ''}
+
+            ${Array.isArray(institutionBias.institution_search_references) && institutionBias.institution_search_references.length
+                ? `<div class="references-section">
+                        <h4>References:</h4>
+                        <ul>
+                            ${institutionBias.institution_search_references
+                                .map(ref => `<li><a href="${ref}" target="_blank">${ref}</a></li>`)
+                                .join('')}
+                        </ul>
+                   </div>`
+                : ''}
+        </div>
+    `;
+}
+
+
+
+
+function formatStance(articleTendency) {
+    if (!articleTendency) {
+        return '<p>No stance found in this content.</p>';
+    }
+    let html = '<div class="stance-section">';
+    if (articleTendency.entities && articleTendency.entities_tendency) {
+        for (let i = 0; i < articleTendency.entities.length; i++) {
+            html += `<li><strong>${articleTendency.entities[i]}</strong>: ${articleTendency.entities_tendency[i] || 'N/A'}</li>`;
+        }
+    html += '</div>';
+    return html;
+    }
+}
+
+
 function formatFactCheck(factChecks) {
     if (!factChecks || factChecks.length === 0) {
-        return '<p>No facts to check in this article.</p>';
+        return '<p>No alleged fact found in this content.</p>';
     }
 
     let html = '<div class="fact-check-section">';
@@ -165,51 +194,74 @@ function formatFactCheck(factChecks) {
     return html;
 }
 
-function displayOppositePerspectives(perspectives) {
-    const container = document.querySelector('.perspective-links');
-    container.innerHTML = ''; // Clear previous results
 
-    if (!perspectives || perspectives.length === 0) {
-        container.innerHTML = '<p>No opposing perspectives found for this article.</p>';
-        return;
+function formatOppositePerspectives(oppositePerspectives) {
+    if (!oppositePerspectives || oppositePerspectives.length === 0) {
+        return '<p>This content does not express any opinions explicitly.</p>';
     }
 
-    perspectives.forEach(perspective => {
-        const perspectiveDiv = document.createElement('div');
-        perspectiveDiv.className = 'perspective-item';
-        
-        const titleLink = document.createElement('a');
-        titleLink.href = perspective.url;
-        titleLink.target = '_blank';
-        titleLink.textContent = perspective.title;
-        
-        const summary = document.createElement('p');
-        summary.textContent = perspective.summary;
-        
-        perspectiveDiv.appendChild(titleLink);
-        perspectiveDiv.appendChild(summary);
-
+    let html = '<div class="opposite-perspectives-section">';
+    oppositePerspectives.forEach((perspective, index) => {
+        html += `<div class="perspective-item">
+            <h4>Perspective ${index + 1}</h4>
+            <p><strong>Author's Opinion:</strong> ${perspective.opinion}</p>
+            <p><strong>Opposing Opinion Online</strong> ${perspective.opposite_opinion}</p>`;
         if (perspective.opposite_opinion_search_references) {
-            const referencesDiv = document.createElement('div');
-            referencesDiv.className = 'references-section';
-            const referencesTitle = document.createElement('h5');
-            referencesTitle.textContent = 'References:';
-            referencesDiv.appendChild(referencesTitle);
-
-            const referencesList = document.createElement('ul');
+            html += '<div class="references-section">';
+            html += '<h5>References:</h5><ul>';
             perspective.opposite_opinion_search_references.forEach(ref => {
-                const refItem = document.createElement('li');
-                const refLink = document.createElement('a');
-                refLink.href = ref;
-                refLink.target = '_blank';
-                refLink.textContent = ref;
-                refItem.appendChild(refLink);
-                referencesList.appendChild(refItem);
+                html += `<li><a href="${ref}" target="_blank">${ref}</a></li>`;
             });
-            referencesDiv.appendChild(referencesList);
-            perspectiveDiv.appendChild(referencesDiv);
+            html += '</ul></div>';
         }
-        
-        container.appendChild(perspectiveDiv);
+        html += '</div>';
     });
-} 
+    html += '</div>';
+    return html;
+
+}
+
+function formatConclusion(conclusion) {
+    if (!conclusion) {
+        return '<p>No conclusion generated.</p>';
+    }
+
+
+    const ratingRaw = (conclusion.rating || '').toLowerCase();
+    let activeCount = 0;
+    let colorClass  = '';
+
+    switch (ratingRaw) {
+        case 'excellent':
+            activeCount = 4;  colorClass = 'excellent';  break;
+        case 'good':
+            activeCount = 3;  colorClass = 'good';       break;
+        case 'average':
+            activeCount = 2;  colorClass = 'average';    break;
+        case 'poor':
+            activeCount = 1;  colorClass = 'poor';       break;
+        case 'unverifiable':
+        default:
+            activeCount = 0;  colorClass = 'unverifiable'; break;
+    }
+
+    const ratingBar = `
+        <span class="rating-bar">
+            ${Array.from({ length: 4 }).map((_, i) =>
+                `<span class="rating-segment ${
+                    i < activeCount ? `active ${colorClass}` : ''
+                }"></span>`).join('')}
+        </span>
+    `;
+
+    return `
+        <div class="conclusion-section">
+            <p class="rating-row">
+                <strong>Overall Rating:</strong>
+                <span class="rating-text">${conclusion.rating || 'N/A'}</span>
+                ${ratingBar}
+            </p>
+            <p><strong>Conclusion:</strong> ${conclusion.conclusion || 'N/A'}</p>
+        </div>
+    `;
+}

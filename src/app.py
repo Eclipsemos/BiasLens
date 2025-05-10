@@ -35,13 +35,11 @@ def analyze_article():
         conclusion = analyzer.get_conclusion()
         
         analysis_result = {
-            'bias_analysis': {
-                'article_info': article_info,
-                'article_intent': article_intent,
-                'article_tendency': article_tendency,
-                'institution_bias': institution_bias,
-                'conclusion': conclusion
-            },
+            'article_info': article_info,
+            'article_intent': article_intent,
+            'article_tendency': article_tendency,
+            'institution_bias': institution_bias,
+            'conclusion': conclusion,
             'fact_check': fact_check_results,
             'opposite_perspectives': opposite_perspectives
         }
@@ -52,4 +50,4 @@ def analyze_article():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000) 
+    app.run(debug=False, port=5000) 

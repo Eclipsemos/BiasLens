@@ -21,9 +21,9 @@ prompt_lib = {
     "article_expressive_intent_extract_prompt": (
         "Determine the **expressive intent** of the article by selecting the most accurate category from the list below:\n"
         "  1. \"Straight News / Factual Reporting\" - Objective, fact-based reporting with no opinion or analysis.\n"
-        "  2. \"Opinion Content\" - Subjective writing that includes personal views, arguments, or evaluations.\n"
+        "  2. \"Opinion Content\" - Subjective writing that includes views, arguments, or evaluations.\n"
         "  3. \"Interpretive Reporting\" - Factual reporting that includes context, background, or analysis to explain significance.\n"
-        "  (If none of the above apply, leave the field empty: \"\")\n\n"
+        "  4. \"Other\" - Content that does not fit into the above categories.\n\n"
         
         "Return only a JSON object in the following format (e.g.):\n"
         "{\"expressive_intent\": \"Straight News / Factual Reporting\"}"

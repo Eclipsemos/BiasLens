@@ -83,7 +83,7 @@ body {
 
 h2 {
     color: #34495e;
-    font-size: 1.2em;
+    font-size: 1.5em;
     margin: 0 0 10px 0;
 }
 
@@ -214,3 +214,62 @@ h2 {
 .conclusion-section strong {
     color: #2c3e50;
 }
+
+
+.credibility-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+
+.level-bar {
+    display: inline-flex;
+    gap: 4px;
+    width: 120px;
+    vertical-align: middle;
+}
+
+
+.level-segment {
+    flex: 1;
+    height: 12px;
+    background-color: #ccc;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.low.active    { background-color: red;    }
+.medium.active { background-color: orange; }
+.high.active   { background-color: green;  }
+
+/* ======= Rating inline bar ======= */
+.rating-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.rating-bar {
+    display: inline-flex;
+    gap: 5px;
+    width: 200px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.rating-segment {
+    flex: 1;
+    background: #e0e0e0;
+    border-radius: 3px;
+    opacity: 0.4;
+    transition: background 0.3s, opacity 0.3s;
+}
+
+
+.rating-segment.active          { opacity: 1; }
+.rating-segment.active.poor      { background: #e74c3c; }
+.rating-segment.active.average   { background: #f1c40f; }
+.rating-segment.active.good      { background: #d4e157; }
+.rating-segment.active.excellent { background: #2ecc71; }
