@@ -57,17 +57,37 @@ graph TD
 
 ### Backend Setup
 1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/BiasLens.git
-cd BiasLens
-```
+  ```bash
+  git clone https://github.com/yourusername/BiasLens.git
+  cd BiasLens
+  ```
 
 2. Install required Python packages:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Start the Flask backend server:
+
+3. Configure API Keys via Environment Variables:
+
+
+   1. Create a `.env` file in the `src/` directory.
+
+   2. Add your credentials, including LLM API keys, model names, and search engine API keys and IDs.
+      For example:
+
+      ```bash
+      # src/.env
+      
+      LLM_API_KEY = AIsiHyQjsOlX-oapsLOycq7CNjhopiw7l-BQ1RP
+      LLM_MODEL_NAME = gemini-2.0-flash-lite
+      
+      SEARCH_API_KEY = AIioPqPLKH-20pQ17QopkoWrLHPUI98f2po8v40
+      SEARCH_ENGINE_ID = 21a51tfq2167r0qr1
+      ```
+
+
+4. Start the Flask backend server:
 ```bash
 python src/app.py
 ```
