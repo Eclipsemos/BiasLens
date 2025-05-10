@@ -16,7 +16,12 @@ function extractArticleContent() {
         '.post-content',
         '.entry-content',
         'main',
-        '#main-content'
+        '#main-content',
+        '.story-body',
+        '.content__article-body',
+        '.c-article-content',
+        '.content',
+        '#cmsMainContent'  // ← 新增：针对 CGTN 的文章容器
     ];
 
     // Try to find the main article content

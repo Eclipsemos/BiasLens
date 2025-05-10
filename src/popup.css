@@ -216,33 +216,6 @@ h2 {
 }
 
 
-.credibility-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-
-.level-bar {
-    display: inline-flex;
-    gap: 4px;
-    width: 120px;
-    vertical-align: middle;
-}
-
-
-.level-segment {
-    flex: 1;
-    height: 12px;
-    background-color: #ccc;
-    border-radius: 3px;
-    transition: background-color 0.3s;
-}
-
-.low.active    { background-color: red;    }
-.medium.active { background-color: orange; }
-.high.active   { background-color: green;  }
-
 /* ======= Rating inline bar ======= */
 .rating-row {
     display: flex;
@@ -254,8 +227,8 @@ h2 {
 .rating-bar {
     display: inline-flex;
     gap: 5px;
-    width: 200px;
-    height: 20px;
+    width: 180px;
+    height: 15px;
     vertical-align: middle;
 }
 

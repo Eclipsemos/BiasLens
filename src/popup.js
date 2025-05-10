@@ -107,16 +107,23 @@ function formatInstitution(institutionBias) {
         return '<p>No institution found in this content.</p>';
     }
 
-    const credibility = (institutionBias.credibility || '').toLowerCase(); // 'low' | 'medium' | 'high'
+    const ratingRaw = (institutionBias.credibility || '').toLowerCase().replace(/^[^\s]+\s+/, '');;
+    const levels = ['unverifiable', 'discredited', 'questionable', 'reliable', 'authoritative'];
+    const colorclasses = ['unverifiable', 'poor', 'average', 'good', 'excellent'];
 
+    const levelIndex = levels.indexOf(ratingRaw);
+    const activeCount = levelIndex >= 0 ? levelIndex : 0;
+    const colorClass = colorclasses[levelIndex];
 
-    const levelBar = `
-        <span class="level-bar">
-            <span class="level-segment low   ${credibility === 'low'    ? 'active' : ''}"></span>
-            <span class="level-segment medium ${credibility === 'medium' ? 'active' : ''}"></span>
-            <span class="level-segment high   ${credibility === 'high'   ? 'active' : ''}"></span>
+    const ratingBar = `
+        <span class="rating-bar">
+            ${Array.from({ length: 4 }).map((_, i) =>
+                `<span class="rating-segment ${
+                    i < activeCount ? `active ${colorClass}` : ''
+                }"></span>`).join('')}
         </span>
     `;
+
 
     return `
         <div class="institution-section">
@@ -124,10 +131,10 @@ function formatInstitution(institutionBias) {
             <p><strong>Type:</strong> ${institutionBias.institution_type || 'N/A'}</p>
 
 
-            <p class="credibility-row">
+            <p class="rating-row">
                 <strong>Credibility:</strong>
                 <span class="credibility-text">${institutionBias.credibility || 'N/A'}</span>
-                ${levelBar}
+                ${ratingBar}
             </p>
 
             ${institutionBias.credibility_reason
@@ -197,7 +204,7 @@ function formatFactCheck(factChecks) {
 
 function formatOppositePerspectives(oppositePerspectives) {
     if (!oppositePerspectives || oppositePerspectives.length === 0) {
-        return '<p>This content does not express any opinions explicitly.</p>';
+        return '<p>This content does not express author\'s personal opinions explicitly.</p>';
     }
 
     let html = '<div class="opposite-perspectives-section">';

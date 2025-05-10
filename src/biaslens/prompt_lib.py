@@ -105,15 +105,16 @@ prompt_lib = {
         "  5. \"Other\"\n\n"
         
         "- **Credibility Rating**:\n"
-        "  1. \"High\"\n"
-        "  2. \"Medium\"\n"
-        "  3. \"Low\"\n"
-        "  4. \"Unverifiable\"\n\n"
+        "  1. \"Highly Authoritative\" - The institution is widely recognized as a credible source of information, with a strong reputation for accuracy and reliability.\n"
+        "  2. \"Generally Reliable\" - The institution is considered a reliable source, but may have some limitations or potential biases.\n"
+        "  3. \"Often Questionable\" - The institution has a mixed reputation, with some credible information but also instances of misinformation or bias.\n"
+        "  4. \"Widely Discredited\" - The institution is known for spreading misinformation or has a very poor reputation for accuracy and reliability.\n"
+        "  5. \"Unverifiable\" - The credibility of the institution cannot be assessed due to insufficient information. Or it's not often known.\n\n"
 
         "Please also provide a brief explanation (maximum 3 sentences) justifying your credibility rating.\n\n"
 
         "Respond **only** with a JSON object in the following format. Example:\n"
-        "{{\"institution_type\": \"Commercial\", \"credibility\": \"High\", \"credibility_reason\": \"The NOTBBC has high credibility due to strict editorial standards, independent regulation by Ofcom, and a strong track record of balanced, fact-checked reporting.\"}}\n\n"
+        "{{\"institution_type\": \"Commercial\", \"credibility\": \"Generally Reliable\", \"credibility_reason\": \"The NOTBBC has a relatively high credibility due to its editorial standards, independent regulation by Ofcom, and a track record of balanced, fact-checked reporting.\"}}\n\n"
         
         "Here are the search results:\n{search_results}"
     ),

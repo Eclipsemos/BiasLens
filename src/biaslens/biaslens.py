@@ -12,7 +12,6 @@ class BiasLens:
 
     def __init__(
         self,
-        req,
         LLM_API_KEY,
         LLM_MODEL_NAME,
         SEARCH_ENGINE_ID,
@@ -22,8 +21,13 @@ class BiasLens:
         self.LLM_API_KEY = LLM_API_KEY
         self.LLM_MODEL_NAME = LLM_MODEL_NAME
         self.retriever = QueryWebRetriever(LLM_API_KEY, LLM_MODEL_NAME, SEARCH_ENGINE_ID, SEARCH_API_KEY)
-        self.page_gross_text = req.get("page_gross_text")
-        self.page_url = req.get("page_url")
+        
+        self.page_gross_text = None
+        self.page_source = None
+        self.page_gross_date = None
+        self.page_gross_author = None
+        self.page_gross_title = None
+
 
 
     def article_pre_analysis(self):
@@ -32,7 +36,9 @@ class BiasLens:
 
         # read the article
         chat.send_message(
-            prompt_lib["article_reading_prompt"].format(article='[' + self.page_url + '] ' + self.page_gross_text)
+            prompt_lib["article_reading_prompt"].format(
+                article=f"[{self.page_source}, {self.page_gross_author}, {self.page_gross_date}: {self.page_gross_title}]\n" + self.page_gross_text
+            )
         )
 
         self.article_info = {}

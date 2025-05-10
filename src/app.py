@@ -11,7 +11,6 @@ load_dotenv() # Load environment variables from .env file
 
 # Initialize the analyzer with your API keys from environment variables
 analyzer = BiasLens(
-    req={},  # Empty dict as initial request
     LLM_API_KEY=os.getenv('LLM_API_KEY'),
     LLM_MODEL_NAME=os.getenv('LLM_MODEL_NAME'),
     SEARCH_ENGINE_ID=os.getenv('SEARCH_ENGINE_ID'),
@@ -25,7 +24,10 @@ def analyze_article():
         
         # Update the analyzer with new article data
         analyzer.page_gross_text = article_data.get('content', '')
-        analyzer.page_url = article_data.get('url', '')
+        analyzer.page_source = article_data.get('source', '')
+        analyzer.page_gross_title = article_data.get('title', '')
+        analyzer.page_date = article_data.get('date', '')
+        analyzer.page_gross_author = article_data.get('author', '')
         
         # Perform the analysis
         article_info, article_intent, article_tendency = analyzer.article_pre_analysis()
