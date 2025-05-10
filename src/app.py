@@ -1,22 +1,21 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from biaslens.biaslens import BiasLens
-import configparser
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for the Chrome extension
 
-# Load configuration from cfg file
-config = configparser.ConfigParser()
-config.read('config.cfg')
+load_dotenv() # Load environment variables from .env file
 
-# Initialize the analyzer with your API keys from config
+# Initialize the analyzer with your API keys from environment variables
 analyzer = BiasLens(
     req={},  # Empty dict as initial request
-    LLM_API_KEY=config['API_KEYS']['LLM_API_KEY'],
-    LLM_MODEL_NAME=config['API_KEYS']['LLM_MODEL_NAME'],
-    SEARCH_ENGINE_ID=config['API_KEYS']['SEARCH_ENGINE_ID'],
-    SEARCH_API_KEY=config['API_KEYS']['SEARCH_API_KEY']
+    LLM_API_KEY=os.getenv('LLM_API_KEY'),
+    LLM_MODEL_NAME=os.getenv('LLM_MODEL_NAME'),
+    SEARCH_ENGINE_ID=os.getenv('SEARCH_ENGINE_ID'),
+    SEARCH_API_KEY=os.getenv('SEARCH_API_KEY')
 )
 
 @app.route('/analyze', methods=['POST'])

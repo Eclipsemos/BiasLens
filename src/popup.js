@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const errorDiv = document.getElementById('error');
 
     // Flask backend URL - change this to your deployed URL in production
-    const BACKEND_URL = 'http://localhost:5000';
+    const BACKEND_URL = 'http://127.0.0.1:5000';
 
     analyzeBtn.addEventListener('click', async function() {
         // Show loading state

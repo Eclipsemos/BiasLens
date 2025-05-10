@@ -40,7 +40,7 @@ class QueryWebRetriever:
     
     def _get_reddit_content(self, url: str, headers, max_depth = 2) -> str:
         json_url = url.rstrip("/") + "/.json"
-        r = requests.get(json_url, params={"raw_json": 1}, headers=headers, timeout=5)
+        r = requests.get(json_url, params={"raw_json": 1}, headers=headers, timeout=(3, 7))
         r.raise_for_status()
 
         post_listing, comment_listing = r.json()
@@ -77,16 +77,20 @@ class QueryWebRetriever:
         try:
             headers = {
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-                "Accept": "application/json",
+                "Accept": (
+                    "text/html,application/xhtml+xml,"
+                    "application/json;q=0.9,"
+                    "application/xml;q=0.8,*/*;q=0.7"
+                ),
                 "Accept-Language": "en-US,en;q=0.9",
                 "Connection": "keep-alive"
             }
             if "www.reddit.com" in url:
                 text = self._get_reddit_content(url, headers)
-            elif "www.nbcnews.com" in url or "www.newsmax.com" in url: # cannot access
+            elif "www.newsmax.com" in url or url.endswith(".pdf"): # cannot access
                 return None
             else:
-                response = requests.get(url, headers=headers, timeout=5)
+                response = requests.get(url, headers=headers, timeout=(3, 7))
                 response.raise_for_status()
                 soup = BeautifulSoup(response.content, 'html.parser')
                 for script_or_style in soup(['script', 'style']):
