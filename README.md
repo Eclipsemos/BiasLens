@@ -1,4 +1,4 @@
-# BiasLens - News Bias Analysis Chrome Extension
+# BiasLens: A Real-Time Chrome Extension for Multi-Layer News Analysis
 
 
 BiasLens is a browser extension that performs an instant, multi-layered audit of online articles—surfacing hidden framing, checking facts against live sources, and offering concise alternative viewpoints so readers.
@@ -7,8 +7,6 @@ BiasLens is a browser extension that performs an instant, multi-layered audit of
 ## Architecture
 
 <img src="src/images/framework.png" alt="framework" width="320" />
-
-
 
 
 
@@ -32,7 +30,7 @@ BiasLens is a browser extension that performs an instant, multi-layered audit of
 ### Backend Setup
 1. Clone the repository:
   ```bash
-  git clone https://github.com/yourusername/BiasLens.git
+  git clone https://github.com/Eclipsemos/BiasLens.git
   cd BiasLens
   ```
 
@@ -201,23 +199,23 @@ python src/app.py
 ```bash
 BiasLens/
 ├── README.md
-├── requirements.txt					# Python dependencies
+├── requirements.txt          # Python dependencies
 └── src
-    ├── app.py								# Flask backend server
-    ├── background.js					# Background script
+    ├── app.py                # Flask backend server
+    ├── background.js         # Background script
     ├── biaslens
-    │   ├── biaslens.py				# main class with different methods
-    │   ├── prompt_lib.py			# LLM Prompts
-    │   ├── test_result.json	# testing results example
-    │   ├── test.py						# testing script
-    │   └── utils.py					# search functionalities
-    ├── content.js						# Content script for article extraction
+    │   ├── biaslens.py       # main class with different methods
+    │   ├── prompt_lib.py     # LLM Prompts
+    │   ├── test_result.json  # testing results example
+    │   ├── test.py           # testing script
+    │   └── utils.py          # search functionalities
+    ├── content.js            # Content script for article extraction
     ├── images
     │   └── ...
-    ├── manifest.json					# Chrome extension manifest
-    ├── popup.css							# Frontend styles
-    ├── popup.html						# Extension popup interface
-    └── popup.js							# Frontend logic
+    ├── manifest.json         # Chrome extension manifest
+    ├── popup.css             # Frontend styles
+    ├── popup.html            # Extension popup interface
+    └── popup.js              # Frontend logic
 ```
 
 ### Dependencies
